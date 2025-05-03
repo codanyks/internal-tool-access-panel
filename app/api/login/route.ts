@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSession } from "@/app/lib/session";
+import { createSession } from "../../lib/session";
 
 const roleToolMap: Record<string, string[]> = {
-    admin: ["hr", "sales", "pipelines"],
-    hr: ["hr"],
-    sales: ["sales"],
-    dev: ["pipelines"],
+    admin: ["hrms", "sales_funnel", "pipelines"],
+    hr: ["hrms"],
+    sales: ["sales_funnel"],
+    developer: ["pipelines"],
 };
 
 const USERS = JSON.parse(process.env.USERS || "[]");

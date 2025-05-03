@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteSession } from '@/app/lib/session';
+import { deleteSession } from '../lib/session';
 
 export default function ToolsPage() {
     const [tools, setTools] = useState<string[]>([]);

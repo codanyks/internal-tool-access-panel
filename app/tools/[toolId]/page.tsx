@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { deleteSession } from '@/app/lib/session';
+import { deleteSession } from '../../lib/session';
 
 export default function ToolPage() {
     const [status, setStatus] = useState<'loading' | 'ok' | 'unauthorized'>('loading');
@@ -10,33 +10,32 @@ export default function ToolPage() {
     const [toolId, setToolId] = useState<string | null>(null);
     const [tools, setTools] = useState<string[]>([]);
     const router = useRouter();
-    const { toolId: routeToolId } = useParams() as { toolId: string };
+    const params = useParams() as { toolId: string };
 
     useEffect(() => {
-        setToolId(routeToolId); // Set the toolId from the URL
+        setToolId(params.toolId); // Set the toolId from the URL
         const sessionId = localStorage.getItem('sessionId');
         if (!sessionId) {
             router.push('/login');
             return;
         }
-
-        fetch(`/api/session?sid=${sessionId}`)
-            .then((res) => res.json())
-            .then((data) => {
+        fetch(`/api/tools?sid=${sessionId}&toolId=${params.toolId}`)
+            .then(res => res.json())
+            .then(data => {
                 if (data.error) {
                     router.push('/login');
                     return;
                 }
 
-                if (!data.toolIds.includes(routeToolId)) {
+                setTools(data.toolIds || []);
+                if (!data.toolIds.includes(params.toolId)) {
                     setStatus('unauthorized');
                 } else {
-                    setTools(data.toolIds || []);
                     setUsername(data.username);
                     setStatus('ok');
                 }
-            });
-    }, [router, routeToolId]);
+            }).catch((e) => { setStatus('unauthorized') });
+    }, [router, params.toolId]);
 
     const handleLogout = async () => {
         const sessionId = localStorage.getItem('sessionId');
