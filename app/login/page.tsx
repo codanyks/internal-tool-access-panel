@@ -19,11 +19,18 @@ export default function LoginPage() {
             headers: { 'Content-Type': 'application/json' },
         });
 
-        if (res.ok) {
-            console.log('Login success');
-        } else {
-            const data = await res.json();
+        const data = await res.json();
+        if (!res.ok || !data.sessionId) {
             setError(data.error || 'Login failed');
+            return;
+        }
+        localStorage.setItem('sessionId', data.sessionId);
+
+        const sessionRes = await fetch(`/api/session?sid=${data.sessionId}`);
+        const sessionData = await sessionRes.json();
+
+        if (sessionData.toolIds?.length < 0) {
+            setError('No access to any tools');
         }
     };
 
