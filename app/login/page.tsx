@@ -31,6 +31,8 @@ export default function LoginPage() {
 
         if (sessionData.toolIds?.length < 0) {
             setError('No access to any tools');
+        } else {
+            router.push(`/tools`);
         }
     };
 
